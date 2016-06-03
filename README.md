@@ -2,6 +2,8 @@
 
 ![qmqtt-plot screenshot](qmqtt-plot.png)
 
+* Quick Video demo: [MQTT broker latency test with Machinekit + EtherCAT on Raspberry Pi3 ](https://www.youtube.com/watch?v=uFbr7xBjItE)
+
 #### Build and install qmqtt-plot
 
 ```bash
