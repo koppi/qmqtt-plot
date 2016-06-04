@@ -44,7 +44,7 @@
 
 const QHostAddress EXAMPLE_HOST = QHostAddress("192.168.0.114");
 const quint16 EXAMPLE_PORT = 1883;
-const QString EXAMPLE_TOPIC = "pwmgen.0.pwm";
+const QString EXAMPLE_TOPIC = "siggen.0.sine";
 
 class Publisher : public QMQTT::Client
 {

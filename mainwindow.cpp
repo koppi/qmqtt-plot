@@ -73,10 +73,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->plot->graph(0)->setAntialiased(true);
 
     //ui->plot->graph(0)->setLineStyle(QCPGraph::lsNone);
-    ui->plot->graph(0)->setLineStyle(QCPGraph::lsStepLeft);
-    // ui->plot->graph(0)->setLineStyle(QCPGraph::lsLine);
+    //ui->plot->graph(0)->setLineStyle(QCPGraph::lsStepLeft);
+    ui->plot->graph(0)->setLineStyle(QCPGraph::lsLine);
     QPen pen(Qt::black);
-    pen.setWidth(1);
+    pen.setWidth(2);
     pen.setColor(QColor(0,0,0,0x7f));
     ui->plot->graph(0)->setPen(pen);
     ui->plot->graph(0)->setName("");
@@ -85,16 +85,17 @@ MainWindow::MainWindow(QWidget *parent) :
     myScatter.setShape(QCPScatterStyle::ssCircle);
     myScatter.setPen(QPen(Qt::blue));
     myScatter.setBrush(Qt::black);
-    myScatter.setSize(2);
+    myScatter.setSize(3);
     ui->plot->graph(0)->setScatterStyle(myScatter);
 
     ui->plot->xAxis->setRange(0,10);
     ui->plot->yAxis->setRange(-0.25,1.25);
-    ui->plot->yAxis->setAutoTickCount(5);
+    ui->plot->yAxis->setAutoTickStep(true);
+    ui->plot->yAxis->setAutoTickCount(7);
 
     ui->plot->xAxis->setDateTimeFormat("h:mm:ss");
     ui->plot->xAxis->setTickLabelType(QCPAxis::ltDateTime);
-    ui->plot->xAxis->setAutoTickStep(false);
+    ui->plot->xAxis->setAutoTickStep(true);
     ui->plot->xAxis->setTickStep(1);
 
     ui->plot->yAxis->rescale(true);
@@ -332,6 +333,8 @@ void MainWindow::log(QString l) {
 void MainWindow::updatePlot() {
     double tsl = QDateTime::currentMSecsSinceEpoch() / 1000.0;
     ui->plot->xAxis->setRange(tsl - zoomTime, tsl);
+    ui->plot->yAxis->rescale(true);
+    //ui->plot->rescaleAxes();
     ui->plot->replot(QCustomPlot::rpQueued);
 }
 
@@ -358,7 +361,7 @@ void MainWindow::printPreview(QPrinter *printer) {
 
     int plotWidth = ui->plot->viewport().width();
     int plotHeight = ui->plot->viewport().height();
-    double scale = pageRect.width()/(double)plotWidth;
+    double scale = qMin(pageRect.width()/(double)plotWidth, pageRect.height()/(double)plotHeight);
 
     painter.setRenderHints(QPainter::Antialiasing |
                            QPainter::TextAntialiasing |
