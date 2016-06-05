@@ -1,0 +1,9 @@
+qmqtt-plot
+main.pro.user
+debian/*.log
+qrc_res.cpp
+build-stamp
+Makefile
+ui_*.h
+moc_*.cpp
+*.o

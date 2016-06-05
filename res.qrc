@@ -1,0 +1,7 @@
+<RCC>
+  <qresource>
+  </qresource>
+  <qresource prefix="/">
+    <file>qmqtt-plot.svg</file>
+  </qresource>
+</RCC>

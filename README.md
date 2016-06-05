@@ -21,8 +21,13 @@ make
 
 * Enter your MQTT broker's hostname and click connect.
 
-#### Libraries included
+#### Credits
+
+Libraries included:
 
 * [qcustomplot.com](http://qcustomplot.com)
 * [qmqtt](https://github.com/emqtt/qmqtt)
 
+Artwork:
+
+* [qmqtt-plot.svg](https://openclipart.org/detail/200755/primary-plot) by danny
