@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Name=qmqtt-plot
+GenericName=QMQTT Plot
+Comment=MQTT Timestamped data plotter
+Icon=/usr/share/icons/hicolor/scalable/apps/qmqtt-plot.svg
+
+Type=Application
+Categories=Engineering;Development
+
+Exec=qmqtt-plot %f
+Terminal=false
