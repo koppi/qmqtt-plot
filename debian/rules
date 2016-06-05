@@ -47,7 +47,7 @@ install: build
 	chmod 664 $(CURDIR)/debian/tmp/usr/share/icons/hicolor/scalable/apps/qmqtt-plot.svg
 
 	install -d -v -m 0755 $(CURDIR)/debian/tmp/usr/bin
-	install -m 755 -p bpp $(CURDIR)/debian/tmp/usr/bin/qmqtt-plot
+	install -m 755 -p qmqtt-plot $(CURDIR)/debian/tmp/usr/bin/qmqtt-plot
 
 # Build architecture-independent files here.
 binary-indep: build install
@@ -71,7 +71,7 @@ binary-arch: build install
 #	dh_installchangelogs ChangeLog
 	dh_installdocs -s README.md
 	dh_install -s --sourcedir=$(CURDIR)/debian/tmp
-#	dh_installman bpp.1
+#	dh_installman qmqtt-plot.1
 	dh_installmime
 	dh_installmenu
 	dh_link
