@@ -1,0 +1,16 @@
+Source: qmqtt-plot
+Section: graphics
+Priority: optional
+Maintainer: Jakob Flierl <jakob.flierl@gmail.com>
+Uploaders: Jakob Flierl <jakob.flierl@gmail.com>
+Build-Depends: debhelper (>= 7.0.50~), pkgconf, automake, libtool, cmake, qt5-default, qt5-qmake, qtbase5-dev, qttools5-dev-tools, lsb-release
+Standards-Version: 3.9.7
+Homepage: https://github.com/koppi/qmqtt-plot
+Vcs-Git: git://github.com/koppi/qmqtt-plot.git
+Vcs-Browser: https://github.com/koppi/qmqtt-plot
+
+Package: qmqtt-plot
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: MQTT plot Qt5 app
+ A GUI that plots timestamped MQTT data.
