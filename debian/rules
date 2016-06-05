@@ -39,15 +39,15 @@ install: build
 	dh_clean -k
 	dh_installdirs
 
-	$(MAKE) INSTALL_ROOT=$(CURDIR)/debian/tmp install
-	install -d -v -m 0755 $(CURDIR)/debian/tmp/usr/share/applications
-	chmod 664 $(CURDIR)/debian/tmp/usr/share/applications/qmqtt-plot.desktop
+	$(MAKE) INSTALL_ROOT=$(CURDIR)/debian/qmqtt-plot install
+	install -d -v -m 0755 $(CURDIR)/debian/qmqtt-plot/usr/share/applications
+	chmod 664 $(CURDIR)/debian/qmqtt-plot/usr/share/applications/qmqtt-plot.desktop
 
-	install -d -v -m 0755 $(CURDIR)/debian/tmp/usr/share/icons/hicolor/scalable/apps
-	chmod 664 $(CURDIR)/debian/tmp/usr/share/icons/hicolor/scalable/apps/qmqtt-plot.svg
+	install -d -v -m 0755 $(CURDIR)/debian/qmqtt-plot/usr/share/icons/hicolor/scalable/apps
+	chmod 664 $(CURDIR)/debian/qmqtt-plot/usr/share/icons/hicolor/scalable/apps/qmqtt-plot.svg
 
-	install -d -v -m 0755 $(CURDIR)/debian/tmp/usr/bin
-	install -m 755 -p qmqtt-plot $(CURDIR)/debian/tmp/usr/bin/qmqtt-plot
+	install -d -v -m 0755 $(CURDIR)/debian/qmqtt-plot/usr/bin
+	install -m 755 -p qmqtt-plot $(CURDIR)/debian/qmqtt-plot/usr/bin/qmqtt-plot
 
 # Build architecture-independent files here.
 binary-indep: build install
@@ -70,7 +70,7 @@ binary-arch: build install
 	dh_testroot
 #	dh_installchangelogs ChangeLog
 	dh_installdocs -s README.md
-	dh_install -s --sourcedir=$(CURDIR)/debian/tmp
+	dh_install -s --sourcedir=$(CURDIR)/debian/qmqtt-plot
 #	dh_installman qmqtt-plot.1
 	dh_installmime
 	dh_installmenu
