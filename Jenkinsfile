@@ -1,8 +1,6 @@
 node {
-  // Mark the code checkout 'stage'....
   stage 'Stage Checkout'
 
-  // Checkout code from repository and update any submodules
   checkout scm
   sh 'git submodule update --init'  
 
@@ -14,11 +12,19 @@ node {
   def flavor = flavor(env.BRANCH_NAME)
   echo "Building flavor ${flavor}"
 
-  sh "export TRAVIS_DEBIAN_DISTRIBUTION=sid; wget -O- http://travis.debian.net/script.sh | sh -"
+  def os = [:]
+  os["sid"] = {
+    sh "export TRAVIS_DEBIAN_DISTRIBUTION=sid; wget -O- http://travis.debian.net/script.sh | sh -"
+  }
+  os["jessie"] = {
+    sh "export TRAVIS_DEBIAN_DISTRIBUTION=jessie; wget -O- http://travis.debian.net/script.sh | sh -"
+  }
+
+  parallel os
 
   stage 'Stage Archive'
-  //tell Jenkins to archive the debs
-  step([$class: 'ArtifactArchiver', artifacts: '../*.deb', fingerprint: true])
+  // tell Jenkins to archive the debs
+  // ..
 
   stage 'Stage Upload'
   // ...
