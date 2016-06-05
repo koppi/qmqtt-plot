@@ -87,7 +87,11 @@ public slots:
 
     void onDisconnected()
     {
+#if (QT_VERSION < QT_VERSION_CHECK(5, 4, 0))
+        QTimer::singleShot(0, qApp, SLOT(QCoreApplication::quit()));
+#else
         QTimer::singleShot(0, qApp, &QCoreApplication::quit);
+#endif
     }
 };
 
