@@ -67,7 +67,7 @@ CONFIG += warn_on
 CONFIG += thread
 CONFIG += c++11
 
-QT += core network gui webkitwidgets printsupport widgets
+QT += core network gui printsupport widgets
 
 ICON   = qmqtt-plot.svg
 
