@@ -1,7 +1,3 @@
-QT += core network gui webkitwidgets printsupport widgets
-
-CONFIG += c++11
-
 TEMPLATE = app
 
 TARGET = qmqtt-plot
@@ -9,7 +5,6 @@ TARGET = qmqtt-plot
 DEFINES += QMQTT_EXAMPLE
 
 INCLUDEPATH += libqmqtt
-LIBS += -lqmqtt
 
 SOURCES = main.cpp \
     mainwindow.cpp ledindicator.cpp qcustomplot.cpp \
@@ -36,6 +31,11 @@ libqmqtt/qmqtt_message.h   libqmqtt/qmqtt_routesubscription.h  libqmqtt/qmqtt_ti
 win32 {
 
 } else {
+  MOC_DIR = .moc
+  #OBJECTS_DIR = .obj
+  UI_DIR = .ui
+  RCC_DIR = .rcc
+
   CONFIG      += link_pkgconfig
 
   qmqtt-plot-binary.path = /usr/bin
@@ -50,3 +50,30 @@ win32 {
   RESOURCES   += res.qrc
 }
 
+win32 {
+  DEFINES += BUILDTIME=\\\"HH:MM\\\"
+  DEFINES += BUILDDATE=\\\"Y-m-d\\\"
+} else {
+  DEFINES += BUILDTIME=\\\"$$system(date '+%H:%M')\\\"
+  DEFINES += BUILDDATE=\\\"$$system(date '+%Y-%m-%d')\\\"
+}
+
+QMAKE_CXXFLAGS_RELEASE += -O2
+QMAKE_CXXFLAGS_DEBUG   += -O0
+
+CONFIG *= debug_and_release
+CONFIG *= qt
+CONFIG += warn_on
+CONFIG += thread
+CONFIG += c++11
+
+QT += core network gui webkitwidgets printsupport widgets
+
+ICON   = qmqtt-plot.svg
+
+OTHER_FILES += README.md qmqtt-plot.svg
+
+DIRS_DC = object_script.* .ui .moc .rcc .obj *.pro.user $$TARGET
+
+unix:QMAKE_DISTCLEAN  += -r $$DIRS_DC
+win32:QMAKE_DISTCLEAN += /s /f /q $$DIRS_DC && rd /s /q $$DIRS_DC
