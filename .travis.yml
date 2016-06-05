@@ -5,10 +5,7 @@ services:
 
 script:
   - export TRAVIS_DEBIAN_DISTRIBUTION=sid; wget -O- http://travis.debian.net/script.sh | sh -
-  - sudo dpkg -i ../qmqtt-plot*deb
-  - sudo apt-get -y -f install
-  - sudo dpkg -i ../qmqtt-plot*deb
-  - dpkg -L qmqtt-plot
+  - dpkg -c ../qmqtt-plot_*deb
 
 branches:
   except:
