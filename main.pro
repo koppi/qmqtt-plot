@@ -71,7 +71,7 @@ QT += core network gui printsupport widgets
 
 ICON   = qmqtt-plot.svg
 
-OTHER_FILES += README.md qmqtt-plot.svg
+OTHER_FILES += README.md qmqtt-plot.svg qmqtt-plot.desktop
 
 DIRS_DC = object_script.* .ui .moc .rcc .obj *.pro.user $$TARGET
 
