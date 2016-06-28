@@ -56,6 +56,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->toolBar->insertWidget(ui->actionConnect_Disconnect, mqttHost);
 
+    mqttTopic = new QLineEdit();
+    mqttTopic->setMaximumWidth(200);
+
+    ui->toolBar->insertWidget(ui->actionConnect_Disconnect, mqttTopic);
+
     led1 = new QLedIndicator(this);
     led1->setOn(true);
 
@@ -128,6 +133,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(subscriber, SIGNAL(disconnected()), this, SLOT(onDisconnected()));
 
     connect(ui->actionConnect_Disconnect, SIGNAL(toggled(bool)), this, SLOT(connectDisconnectMQTT(bool)));
+    connect(mqttTopic, SIGNAL(textChanged(QString)), this, SLOT(updateMQTTSubscription()));
 
     loadSettings();
 
@@ -170,7 +176,6 @@ void MainWindow::connectDisconnectMQTT(bool connect) {
             subscriber->connectToHost();
             subscriber->setAutoReconnect(true);
             ui->statusbar->showMessage(tr("Connecting to %1").arg(mqttHost->text()));
-
         }
     } else {
         subscriber->setAutoReconnect(false);
@@ -180,12 +185,24 @@ void MainWindow::connectDisconnectMQTT(bool connect) {
     }
 }
 
+void MainWindow::updateMQTTSubscription() {
+    if (!mqttTopicOld.isEmpty()) {
+      subscriber->unsubscribe(mqttTopicOld);
+    }
+
+    subscriber->subscribe(mqttTopic->text(), 0);
+
+    mqttTopicOld = mqttTopic->text();
+}
+
 void MainWindow::onConnected() {
     ui->statusbar->showMessage(tr("Connected to %1").arg(subscriber->hostName()), 1000);
     log(QString("connected to %1").arg(subscriber->hostName()));
     led1->setDisconnected(false);
     ui->actionConnect_Disconnect->setChecked(true);
     ui->actionConnect_Disconnect->setToolTip(tr("Disconnect"));
+
+    updateMQTTSubscription();
 }
 
 void MainWindow::onDisconnected() {
@@ -201,32 +218,28 @@ void MainWindow::onReceived(QString topic, QString msg) {
 
     log(QString("%1: %2").arg(topic, msg));
 
-    if (QString(EXAMPLE_TOPIC) == topic) {
+    bool ok1, ok2;
+    double ts = msg.split(" ")[0].toDouble(&ok1);
+    double tmp = msg.split(" ")[1].toDouble(&ok2);
 
-        bool ok1, ok2;
-        double ts = msg.split(" ")[0].toDouble(&ok1);
-        double tmp = msg.split(" ")[1].toDouble(&ok2);
+    if (ok1 && ok2) {
+        led1->setOn(tmp);
 
+        ui->plot->graph(0)->addData(ts, tmp);
+        ui->plot->graph(0)->removeDataBefore(ts - qMin((int)(zoomTime*10), 600)); // max 10 minutes buffer size
+        // ui->plot->graph(0)->setName(topic);
 
-        if (ok1 && ok2) {
-            led1->setOn(tmp);
+        double lagt = (tsl - ts) * 1000;
+        lag->setText(tr("%1%2 msec lag").arg(lagt < 0 ? '-' : ' ').arg(qFabs(lagt),5,'f',2,' '));
 
-            ui->plot->graph(0)->addData(ts, tmp);
-            ui->plot->graph(0)->removeDataBefore(ts - qMin((int)(zoomTime*10), 600)); // max 10 minutes buffer size
-            ui->plot->graph(0)->setName(topic);
+    } else {
+        QString info;
+        info = QString("%1 %2 %3 %4").arg(QString::number(ts, 'f'),
+                                          QString::number(tmp),
+                                          QString::number(ok1),
+                                          QString::number(ok2));
 
-            double lagt = (tsl - ts) * 1000;
-            lag->setText(tr("%1%2 msec lag").arg(lagt < 0 ? '-' : ' ').arg(qFabs(lagt),5,'f',2,' '));
-
-        } else {
-            QString info;
-            info = QString("%1 %2 %3 %4").arg(QString::number(ts, 'f'),
-                                              QString::number(tmp),
-                                              QString::number(ok1),
-                                              QString::number(ok2));
-
-            log(tr("%1: error while converting %1").arg(topic, info));
-        }
+        log(tr("%1: error while converting %1").arg(topic, info));
     }
 }
 
@@ -253,6 +266,7 @@ void MainWindow::loadSettings() {
 
     settings->beginGroup("mqtt");
     mqttHost->setText(settings->value("host", "127.0.0.1").toString());
+    mqttTopic->setText(settings->value("topic", "led/0/status").toString());
     settings->endGroup();
 }
 
@@ -275,6 +289,7 @@ void MainWindow::saveSettings() {
 
     settings->beginGroup("mqtt");
     settings->setValue("host", mqttHost->text());
+    settings->setValue("topic", mqttTopic->text());
     settings->endGroup();
 }
 

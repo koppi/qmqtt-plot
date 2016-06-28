@@ -44,7 +44,7 @@
 
 const QHostAddress EXAMPLE_HOST = QHostAddress("192.168.0.114");
 const quint16 EXAMPLE_PORT = 1883;
-const QString EXAMPLE_TOPIC = "siggen.0.sine";
+const QString EXAMPLE_TOPIC = "rm501/0/pos";
 
 class Publisher : public QMQTT::Client
 {
@@ -118,13 +118,12 @@ signals:
     void signalReceived(QString topic, QString msg);
     void signalConnected();
     void signalDisconnected();
-    void signalSubscribed();
+    void signalSubscribed(QString topic);
 
 public slots:
     void onConnected()
     {
         // _qout << "connected" << endl;
-        subscribe(EXAMPLE_TOPIC, 0);
         emit signalConnected();
     }
 
@@ -138,7 +137,7 @@ public slots:
     {
         Q_UNUSED(topic)
         // _qout << "subscribed " << topic << endl;
-        emit signalSubscribed();
+        emit signalSubscribed(topic);
     }
 
     void onReceived(const QMQTT::Message& message)
@@ -183,6 +182,8 @@ public slots:
 
     void printPreview(QPrinter *printer);
 
+    void updateMQTTSubscription();
+
 private slots:
     void closeEvent(QCloseEvent *);
     void updatePlot();
@@ -194,6 +195,7 @@ private:
 
     QSettings *settings;
     QLineEdit *mqttHost;
+    QLineEdit *mqttTopic;
 
     QLedIndicator *led1;
 
@@ -202,6 +204,8 @@ private:
     QLabel *lag;
 
     double zoomTime;
+
+    QString mqttTopicOld;
 };
 
 #endif // MAINWINDOW_H
