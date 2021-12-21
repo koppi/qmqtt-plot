@@ -1,0 +1,28 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: libraries
+      run: |
+        cd libqmqtt
+        qmake
+        make -j$(nproc)
+        sudo make install
+    - name: build
+      run: |
+        cd ..
+        qmake
+        make
+    - name: make
+      run: make
