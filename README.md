@@ -1,4 +1,4 @@
-### A Qt5 app that plots timestamped MQTT data [![Build Status](https://travis-ci.org/koppi/qmqtt-plot.svg?branch=master)](https://travis-ci.org/koppi/qmqtt-plot)
+### A Qt5 app that plots timestamped MQTT data [![C/C++ CI](https://github.com/koppi/qmqtt-plot/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/koppi/qmqtt-plot/actions/workflows/c-cpp.yml)
 
 ![qmqtt-plot screenshot](qmqtt-plot.png)
 
