@@ -7,7 +7,7 @@
 #### Build and install qmqtt-plot
 
 ```bash
-git clone https://github.com/koppi/qmqtt-plot
+gh repo clone koppi/qmqtt-plot
 cd qmqtt-plot
 cd libqmqtt
 qmake
