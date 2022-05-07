@@ -71,27 +71,45 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->status->addWidget(led1);
     ui->statusbar->addWidget(lag, 0);
 
-    ui->plot->addGraph();
-    ui->plot->legend->setVisible(true);
+    for (int i = 0; i < 5; i++) {
+        ui->plot->addGraph();
+        ui->plot->legend->setVisible(true);
 
-    //ui->plot->graph(0)->setAntialiased(false);
-    ui->plot->graph(0)->setAntialiased(true);
+        //ui->plot->graph(i)->setAntialiased(false);
+        ui->plot->graph(i)->setAntialiased(true);
 
-    //ui->plot->graph(0)->setLineStyle(QCPGraph::lsNone);
-    //ui->plot->graph(0)->setLineStyle(QCPGraph::lsStepLeft);
-    ui->plot->graph(0)->setLineStyle(QCPGraph::lsLine);
-    QPen pen(Qt::black);
-    pen.setWidth(2);
-    pen.setColor(QColor(0,0,0,0x7f));
-    ui->plot->graph(0)->setPen(pen);
-    ui->plot->graph(0)->setName("");
+        //ui->plot->graph(i)->setLineStyle(QCPGraph::lsNone);
+        //ui->plot->graph(i)->setLineStyle(QCPGraph::lsStepLeft);
+        ui->plot->graph(i)->setLineStyle(QCPGraph::lsLine);
+        QPen pen(Qt::black);
+        pen.setWidth(2);
+        pen.setColor(QColor(0,0,0,0x7f));
+        ui->plot->graph(i)->setPen(pen);
+        ui->plot->graph(i)->setName(QString("J%1").arg(i+1));
 
-    QCPScatterStyle myScatter;
-    myScatter.setShape(QCPScatterStyle::ssCircle);
-    myScatter.setPen(QPen(Qt::blue));
-    myScatter.setBrush(Qt::black);
-    myScatter.setSize(3);
-    ui->plot->graph(0)->setScatterStyle(myScatter);
+        QCPScatterStyle myScatter;
+        myScatter.setShape(QCPScatterStyle::ssCircle);
+        switch(i) {
+        case 0:
+            myScatter.setPen(QPen(Qt::red));
+            break;
+        case 1:
+            myScatter.setPen(QPen(Qt::green));
+            break;
+        case 2:
+            myScatter.setPen(QPen(Qt::blue));
+            break;
+        case 3:
+            myScatter.setPen(QPen(Qt::yellow));
+            break;
+        case 4:
+            myScatter.setPen(QPen(Qt::darkYellow));
+            break;
+        }
+        myScatter.setBrush(Qt::black);
+        myScatter.setSize(3);
+        ui->plot->graph(i)->setScatterStyle(myScatter);
+    }
 
     ui->plot->xAxis->setRange(0,10);
     ui->plot->yAxis->setRange(-0.25,1.25);
@@ -218,15 +236,21 @@ void MainWindow::onReceived(QString topic, QString msg) {
 
     log(QString("%1: %2").arg(topic, msg));
 
-    bool ok1, ok2;
-    double ts = msg.split(" ")[0].toDouble(&ok1);
-    double tmp = msg.split(" ")[1].toDouble(&ok2);
+    bool ok_ts, ok[6];
+    double ts = msg.split(" ")[0].toDouble(&ok_ts);
+    double val[6];
 
-    if (ok1 && ok2) {
-        led1->setOn(tmp);
+    for (int i = 1; i < 6; i++) {
+        val[i-1] = msg.split(" ")[i].toDouble(&ok[i-1]);
+    }
 
-        ui->plot->graph(0)->addData(ts, tmp);
-        ui->plot->graph(0)->removeDataBefore(ts - qMin((int)(zoomTime*10), 600)); // max 10 minutes buffer size
+    if (ok_ts && ok[0] && ok[1] && ok[2] && ok[3] && ok[4]) {
+        //led1->setOn(val[0]);
+
+        for (int i = 0; i < 5; i++) {
+            ui->plot->graph(i)->addData(ts, val[i]);
+            ui->plot->graph(i)->removeDataBefore(ts - qMin((int)(zoomTime*10), 600)); // max 10 minutes buffer size
+        }
         // ui->plot->graph(0)->setName(topic);
 
         double lagt = (tsl - ts) * 1000;
@@ -235,9 +259,9 @@ void MainWindow::onReceived(QString topic, QString msg) {
     } else {
         QString info;
         info = QString("%1 %2 %3 %4").arg(QString::number(ts, 'f'),
-                                          QString::number(tmp),
-                                          QString::number(ok1),
-                                          QString::number(ok2));
+                                          QString::number(val[0]),
+                                          QString::number(ok_ts),
+                                          QString::number(ok[0]));
 
         log(tr("%1: error while converting %1").arg(topic, info));
     }
@@ -266,7 +290,7 @@ void MainWindow::loadSettings() {
 
     settings->beginGroup("mqtt");
     mqttHost->setText(settings->value("host", "127.0.0.1").toString());
-    mqttTopic->setText(settings->value("topic", "led/0/status").toString());
+    mqttTopic->setText(settings->value("topic", "Robot/Coordinates").toString());
     settings->endGroup();
 }
 
