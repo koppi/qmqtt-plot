@@ -2,7 +2,10 @@
 
 ![qmqtt-plot screenshot](qmqtt-plot.png)
 
-* Quick Video demo: [MQTT broker latency test with Machinekit + EtherCAT on Raspberry Pi3 ](https://www.youtube.com/watch?v=uFbr7xBjItE)
+* Quick Video demos:
+
+  * [MQTT broker latency test with Machinekit + EtherCAT on Raspberry Pi3 ](https://www.youtube.com/watch?v=uFbr7xBjItE)
+  * [Trajectory generation inside the Mitsubishi RM-501 Movemaster II Robot Simulator](https://www.youtube.com/watch?v=dLeDPIRKhOw)
 
 #### Build and install qmqtt-plot
 
